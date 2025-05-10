@@ -1,11 +1,11 @@
 "use client";
 
 import Link from "next/link";
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
-import { signIn } from "next-auth/react";
 import { validateField } from "../_utils/validateForm";
 import { baseUrl } from "../_utils/const";
+import { useSession } from "next-auth/react";
 
 const page = () => {
   const [name, setName] = useState("");
@@ -17,7 +17,12 @@ const page = () => {
   const [age, setAge] = useState("");
   const [errors, setErrors] = useState({});
   const [loading, setLoading] = useState(false);
+  const { status } = useSession();
   const router = useRouter();
+
+  useEffect(() => {
+    if (status === "authenticated") router.push("/");
+  }, [status, router]);
 
   const formData = { name, email, password, rePassword, username };
 
@@ -61,23 +66,12 @@ const page = () => {
       });
 
       const data = await res.json();
-      console.log(data);
 
       if (!res.ok) {
         setLoading(false);
         throw new Error(data.error || "Sign up failed");
       }
-      const signInRes = await signIn("credentials", {
-        email,
-        password,
-        redirect: false,
-      });
-
-      if (signInRes?.ok) {
-        router.push("/");
-      } else {
-        router.push("/signin"); // Redirect to sign-in if auto-login fails
-      }
+      router.push("/signin");
     } catch (error) {
       setErrors({ back: error.message });
     } finally {

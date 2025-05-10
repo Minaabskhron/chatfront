@@ -9,12 +9,12 @@ export async function middleware(req) {
     secret: process.env.AUTH_SECRET, // Use a secret for token validation
   });
 
-  const isHome = req.nextUrl.pathname === "/"; // Check if the current URL is the home page ("/")
+  // const isHome = req.nextUrl.pathname === "/"; // Check if the current URL is the home page ("/")
 
   // Allow home page and static files to pass through without restrictions
-  if (isHome || req.nextUrl.pathname.startsWith("/_next")) {
-    return NextResponse.next(); // If it's the home page or static file request, proceed normally
-  }
+  // if (isHome || req.nextUrl.pathname.startsWith("/_next")) {
+  //   return NextResponse.next(); // If it's the home page or static file request, proceed normally
+  // }
 
   // If there's no token (user not authenticated), redirect to /signin page
   if (!token) {

@@ -8,6 +8,7 @@ const page = () => {
   const [msg, setMsg] = useState("");
   const [messages, setMessages] = useState([]);
   const [conversations, setConversations] = useState([]);
+  const [users, setUsers] = useState([]);
   const [receiverId, setReceiverId] = useState("");
 
   const router = useRouter();
@@ -80,6 +81,23 @@ const page = () => {
     if (receiverId) fetchMsg();
   }, [token, status, receiverId]);
 
+  useEffect(() => {
+    const getAllUsers = async () => {
+      try {
+        const res = await fetch(`${baseUrl}/api/v1/user/getAllUsers`, {
+          headers: {
+            token,
+          },
+        });
+        const data = await res.json();
+        setUsers(data.users);
+      } catch (error) {
+        console.log(error);
+      }
+    };
+    getAllUsers();
+  }, [token, status]);
+
   const sendMsg = async () => {
     const res = await fetch(`${baseUrl}/api/v1/message/sendmessage`, {
       method: "POST",
@@ -104,31 +122,39 @@ const page = () => {
         <div className="flex gap-5">
           <div>
             <h2>conversation</h2>
-            <div>
-              {conversations?.map((conversation) => (
-                <div key={conversation._id}>
-                  <h3
-                    onClick={() => {
-                      setReceiverId(conversation.receiver._id);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    {conversation.receiver.username}
-                  </h3>
-                </div>
-              ))}
-            </div>
+            {conversations.length === 0 ? (
+              <p>there is no conversations yet</p>
+            ) : (
+              <div>
+                {conversations?.map((conversation) => (
+                  <div key={conversation._id}>
+                    <h3
+                      onClick={() => {
+                        setReceiverId(conversation.receiver._id);
+                      }}
+                      className="cursor-pointer"
+                    >
+                      {conversation.receiver.username}
+                    </h3>
+                  </div>
+                ))}
+              </div>
+            )}
           </div>
           <div>
             <h2>chats</h2>
-            <div>
-              {messages?.map((message) => (
-                <div key={message._id} className="flex gap-5">
-                  <p>{message.text}</p>
-                  <p>{message.sender.username}</p>
-                </div>
-              ))}
-            </div>
+            {!receiverId ? (
+              <p>there is no messages yet</p>
+            ) : (
+              <div>
+                {messages?.map((message) => (
+                  <div key={message._id} className="flex gap-5">
+                    <p>{message.text}</p>
+                    <p>{message.sender.username}</p>
+                  </div>
+                ))}
+              </div>
+            )}
             <div className="flex items-center gap-1 absolute bottom-0">
               <input
                 type="text"
@@ -155,6 +181,23 @@ const page = () => {
                   </svg>
                 </div>
               </button>
+            </div>
+          </div>
+          <div>
+            <h2>users</h2>
+            <div>
+              {users?.map((user) => (
+                <div key={user._id}>
+                  <p
+                    onClick={() => {
+                      setReceiverId(user._id);
+                    }}
+                    className="cursor-pointer"
+                  >
+                    {user.username}
+                  </p>
+                </div>
+              ))}
             </div>
           </div>
         </div>

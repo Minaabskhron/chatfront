@@ -37,7 +37,7 @@ const page = () => {
       <div></div>
       <div>
         <h1 className="text-3xl font-bold mb-2 text-gray-800">
-          Sign in to startchatting
+          Sign in to start chatting
         </h1>
         <form onSubmit={handleSubmit} className="mt-10">
           <label htmlFor="email" className="block pb-2 font-semibold text-sm">

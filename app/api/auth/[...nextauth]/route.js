@@ -25,9 +25,7 @@ export const authOptions = {
 
           if (!res.ok) {
             // If HTTP status is not 200-299
-            throw new Error(
-              user.errors?.msg || user.message || "Authentication failed"
-            );
+            throw new Error(user.error || "Authentication failed");
           }
 
           // Returned object gets stored in JWT

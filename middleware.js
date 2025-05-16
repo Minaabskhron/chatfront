@@ -17,9 +17,9 @@ export async function middleware(req) {
   // }
 
   // If there's no token (user not authenticated), redirect to /signin page
-  // if (!token) {
-  //   return NextResponse.redirect(new URL("/signin", req.url)); // Redirect to the sign-in page if no valid token
-  // }
+  if (!token) {
+    return NextResponse.redirect(new URL("/signin", req.url)); // Redirect to the sign-in page if no valid token
+  }
 
   return NextResponse.next(); // If the user is authenticated, proceed normally with the request
 }

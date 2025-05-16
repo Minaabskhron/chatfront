@@ -3,38 +3,17 @@ import { useState, useEffect } from "react";
 import { baseUrl } from "./_utils/const";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
+import SideBar from "./component/SideBar";
 
 const page = () => {
   const [msg, setMsg] = useState("");
   const [messages, setMessages] = useState([]);
-  const [conversations, setConversations] = useState([]);
   const [users, setUsers] = useState([]);
   const [receiverId, setReceiverId] = useState("");
 
   const router = useRouter();
   const { data: session, status } = useSession();
   const token = session?.accessToken;
-
-  useEffect(() => {
-    const fetchConversation = async () => {
-      try {
-        if (status === "unauthenticated") {
-          router.push("/signin");
-          return;
-        }
-        const res = await fetch(`${baseUrl}/api/v1/conversation`, {
-          headers: {
-            token,
-          },
-        });
-        const data = await res.json();
-        setConversations(data.processedConversations);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    if (status === "authenticated") fetchConversation();
-  }, [token, status, router]);
 
   const fetchMsg = async () => {
     try {
@@ -79,7 +58,7 @@ const page = () => {
       }
     };
     if (receiverId) fetchMsg();
-  }, [token, status, receiverId]);
+  }, [token, status, messages]);
 
   useEffect(() => {
     const getAllUsers = async () => {
@@ -111,6 +90,7 @@ const page = () => {
       }),
     });
     const newMessage = await res.json();
+
     setMessages((prev) => [...prev, newMessage.theMessage]);
     setMsg("");
     // console.log(newMessage);
@@ -118,29 +98,9 @@ const page = () => {
 
   return (
     <>
-      <div className=" p-5 h-screen relative">
+      <div className=" h-screen relative">
         <div className="flex gap-5">
-          <div>
-            <h2>conversation</h2>
-            {conversations.length === 0 ? (
-              <p>there is no conversations yet</p>
-            ) : (
-              <div>
-                {conversations?.map((conversation) => (
-                  <div key={conversation._id}>
-                    <h3
-                      onClick={() => {
-                        setReceiverId(conversation.receiver._id);
-                      }}
-                      className="cursor-pointer"
-                    >
-                      {conversation.receiver.username}
-                    </h3>
-                  </div>
-                ))}
-              </div>
-            )}
-          </div>
+          <SideBar setReceiverId={setReceiverId} />
           <div>
             <h2>chats</h2>
             {!receiverId ? (
@@ -148,9 +108,9 @@ const page = () => {
             ) : (
               <div>
                 {messages?.map((message) => (
-                  <div key={message._id} className="flex gap-5">
-                    <p>{message.text}</p>
-                    <p>{message.sender.username}</p>
+                  <div key={message?._id} className="flex gap-5">
+                    <p>{message?.text}</p>
+                    <p>{message?.sender.username}</p>
                   </div>
                 ))}
               </div>
@@ -186,18 +146,24 @@ const page = () => {
           <div>
             <h2>users</h2>
             <div>
-              {users?.map((user) => (
-                <div key={user._id}>
-                  <p
-                    onClick={() => {
-                      setReceiverId(user._id);
-                    }}
-                    className="cursor-pointer"
-                  >
-                    {user.username}
-                  </p>
+              {users?.length === 0 ? (
+                <p>there is no users</p>
+              ) : (
+                <div>
+                  {users?.map((user) => (
+                    <div key={user._id}>
+                      <p
+                        onClick={() => {
+                          setReceiverId(user._id);
+                        }}
+                        className="cursor-pointer"
+                      >
+                        {user.username}
+                      </p>
+                    </div>
+                  ))}
                 </div>
-              ))}
+              )}
             </div>
           </div>
         </div>

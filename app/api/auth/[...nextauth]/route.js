@@ -55,6 +55,7 @@ export const authOptions = {
         token.role = user.user.role; // Add custom claim
         token.name = user.user.name; // <-- Add this line
         token.email = user.user.email; // optional
+        token.username = user.user.username; // optional
       }
       return token; // Becomes available in session callback
     },
@@ -64,6 +65,7 @@ export const authOptions = {
       session.user.role = token.role; // For role-based UI
       session.user.name = token.name; // <-- Add this line
       session.user.email = token.email; // optional
+      session.user.username = token.username; // optional
       return session;
     },
   },

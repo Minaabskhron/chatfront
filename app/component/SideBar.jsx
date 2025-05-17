@@ -53,7 +53,7 @@ const SideBar = ({ setReceiverId, messages }) => {
         <Searchglasses classes={"absolute top-[5px] left-2"} />
       </div>
 
-      {conversations.length === 0 ? (
+      {conversations?.length === 0 ? (
         <p>there is no conversations yet</p>
       ) : (
         <div>

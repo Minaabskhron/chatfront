@@ -1,12 +1,13 @@
 "use client";
 
-import { useState } from "react";
+import { useEffect, useState } from "react";
 import { baseUrl } from "../_utils/const.js";
 import { useSession } from "next-auth/react";
-import { formatTime } from "../_utils/formatDate.js";
+import { formatDate, formatTime } from "../_utils/formatDate.js";
 
 const ChatArea = ({ receiverId, messages, setMessages }) => {
   const [msg, setMsg] = useState("");
+  const [user, setUser] = useState("");
   const { data: session } = useSession();
   const token = session?.accessToken || "";
   const { username } = session?.user || "";
@@ -30,15 +31,32 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
     // console.log(newMessage);
   };
 
+  useEffect(() => {
+    const getUser = async () => {
+      const res = await fetch(`${baseUrl}/api/v1/user/getuser/${receiverId}`);
+      const user = await res.json();
+      setUser(user.user);
+      console.log(user.user);
+    };
+    getUser();
+  }, [receiverId]);
+
   return (
     <div>
       <div className="flex flex-col justify-between h-full gap-5">
         <div>
-          <h2>Messages</h2>
+          <div className="bg-white py-2 rounded-2xl mb-2 ps-2">
+            <h2>{user?.name || "messages"}</h2>
+            <p>
+              {user.isOnline
+                ? "Online"
+                : `Last seen ${formatDate(user.lastSeen)}`}
+            </p>
+          </div>
           {!receiverId ? (
             <p>there is no messages yet</p>
           ) : (
-            <div className="overflow-y-auto max-h-[475px] pe-4">
+            <div className="overflow-y-auto max-h-[460px] pe-4">
               {messages?.map((message) => {
                 const isSender = message?.sender?.username === username;
                 const time = formatTime(message.createdAt);
@@ -68,7 +86,7 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
             </div>
           )}
         </div>
-        <div className="flex items-center gap-1 pb-5 w-full">
+        <div className="flex items-center gap-1 w-full mb-3">
           <input
             type="text"
             name=""

@@ -47,7 +47,7 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
         <div>
           <div className="bg-white py-2 rounded-2xl mb-2 ps-2">
             <h2>{user?.name || "messages"}</h2>
-            <p>
+            <p className="text-xs text-gray-400">
               {user.isOnline
                 ? "Online"
                 : `Last seen ${formatDate(user.lastSeen)}`}

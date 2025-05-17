@@ -23,3 +23,13 @@ export const formatDate = (isoDate) => {
   if (isToday) return normalTime || "";
   else return normalDate || "";
 };
+
+export const formatTime = (isoDate) => {
+  const date = new Date(isoDate);
+
+  const normalTime = date.toLocaleTimeString("en-US", {
+    hour: "2-digit",
+    minute: "2-digit",
+  });
+  return normalTime;
+};

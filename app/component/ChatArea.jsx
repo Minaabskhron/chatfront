@@ -2,9 +2,14 @@
 
 import { useState } from "react";
 import { baseUrl } from "../_utils/const.js";
+import { useSession } from "next-auth/react";
+import { formatTime } from "../_utils/formatDate.js";
 
-const ChatArea = ({ receiverId, messages, token, setMessages }) => {
+const ChatArea = ({ receiverId, messages, setMessages }) => {
   const [msg, setMsg] = useState("");
+  const { data: session } = useSession();
+  const token = session?.accessToken || "";
+  const { username } = session?.user || "";
 
   const sendMsg = async () => {
     const res = await fetch(`${baseUrl}/api/v1/message/sendmessage`, {
@@ -27,28 +32,50 @@ const ChatArea = ({ receiverId, messages, token, setMessages }) => {
 
   return (
     <div>
-      <div>
-        <h2>Messages</h2>
-        {!receiverId ? (
-          <p>there is no messages yet</p>
-        ) : (
-          <div>
-            {messages?.map((message) => (
-              <div key={message?._id} className="flex gap-5">
-                <p>{message?.text}</p>
-                <p>{message?.sender.username}</p>
-              </div>
-            ))}
-          </div>
-        )}
-        <div className="flex items-center gap-1 bottom-0 absolute mb-10">
+      <div className="flex flex-col justify-between h-full gap-5">
+        <div>
+          <h2>Messages</h2>
+          {!receiverId ? (
+            <p>there is no messages yet</p>
+          ) : (
+            <div>
+              {messages?.map((message) => {
+                const isSender = message?.sender?.username === username;
+                const time = formatTime(message.createdAt);
+
+                return (
+                  <div
+                    key={message?._id}
+                    className={`flex ${
+                      isSender ? "justify-end" : "justify-start"
+                    } mb-2`}
+                  >
+                    <div
+                      className={`px-4 py-2 rounded-2xl max-w-xs break-words ${
+                        isSender
+                          ? "bg-emerald-400 rounded-br-none"
+                          : "bg-white  rounded-bl-none"
+                      }`}
+                    >
+                      <p>{message?.text}</p>
+                      <span className="text-xs text-gray-700 block mt-1 text-right">
+                        {time}
+                      </span>
+                    </div>
+                  </div>
+                );
+              })}
+            </div>
+          )}
+        </div>
+        <div className="flex items-center gap-1 pb-5 w-full">
           <input
             type="text"
             name=""
             id=""
             value={msg}
             onChange={(e) => setMsg(e.target.value)}
-            className="border rounded-2xl ps-2 py-0.5"
+            className="border bg-white rounded-2xl ps-2 py-1 w-full"
             placeholder="type your message"
           />
           <button

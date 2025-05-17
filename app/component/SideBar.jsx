@@ -37,7 +37,7 @@ const SideBar = ({ setReceiverId, messages }) => {
   }, [token, status, router, messages]);
 
   return (
-    <div>
+    <div className="bg-white p-4 mb-2 rounded-2xl">
       <div className="mb-10">
         <h2 className="font-bold text-lg mb-1">{name}</h2>
         <h3>@{username}</h3>
@@ -47,7 +47,7 @@ const SideBar = ({ setReceiverId, messages }) => {
           type="text"
           name=""
           id=""
-          className=" rounded-2xl ps-8 py-1 mb-10 bg-gray-200 focus:outline-none"
+          className=" rounded-2xl ps-8 py-1 mb-10 px-10 bg-gray-200 focus:outline-none"
           placeholder="Search..."
         />
         <Searchglasses classes={"absolute top-[5px] left-2"} />

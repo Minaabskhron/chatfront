@@ -58,8 +58,8 @@ const page = () => {
 
   return (
     <>
-      <div className=" h-screen p-10">
-        <div className="flex gap-5">
+      <div className=" h-screen p-10 bg-blue-400">
+        <div className="grid grid-cols-[300px_1fr_200px] mt-10 h-full gap-5">
           <SideBar setReceiverId={setReceiverId} messages={messages} />
           <ChatArea
             receiverId={receiverId}

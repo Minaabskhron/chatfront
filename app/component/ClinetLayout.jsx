@@ -1,7 +1,6 @@
 "use client";
 import { SocketProvider } from "@/providers/socketProviders.js";
 import { SessionProvider, useSession } from "next-auth/react";
-import NavBar from "./NavBar";
 
 const ClientLayout = ({ children }) => {
   return (
@@ -18,7 +17,6 @@ const SocketProviderWrapper = ({ children }) => {
 
   return (
     <SocketProvider token={token}>
-      <NavBar />
       <div>{children}</div>
     </SocketProvider>
   );

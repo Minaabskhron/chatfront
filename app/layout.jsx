@@ -1,4 +1,5 @@
 import ClientLayout from "./component/ClinetLayout";
+import NavBar from "./component/NavBar";
 import "./globals.css";
 
 export const metadata = {
@@ -10,6 +11,8 @@ export default function RootLayout({ children }) {
   return (
     <html lang="en">
       <body>
+        <NavBar />
+
         <ClientLayout>
           <div>{children}</div>
         </ClientLayout>

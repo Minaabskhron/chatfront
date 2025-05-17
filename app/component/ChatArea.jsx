@@ -60,7 +60,7 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
           {!receiverId ? (
             <p>there is no messages yet</p>
           ) : (
-            <div className="overflow-y-auto max-h-[460px] pe-4">
+            <div className="overflow-y-auto max-h-[440px] pe-4">
               {messages?.map((message) => {
                 const isSender = message?.sender?.username === username;
                 const time = formatTime(message.createdAt);

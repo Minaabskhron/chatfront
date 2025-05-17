@@ -33,7 +33,7 @@ const page = () => {
   };
 
   return (
-    <div className="flex justify-evenly items-center mt-10  ">
+    <div className="flex justify-evenly items-center mt-20 ">
       <div></div>
       <div>
         <h1 className="text-3xl font-bold mb-2 text-gray-800">

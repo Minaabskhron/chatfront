@@ -13,7 +13,7 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
 
   const sendMsg = async () => {
     const res = await fetch(
-      `${process.env.BASEURL}/api/v1/message/sendmessage`,
+      `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/message/sendmessage`,
       {
         method: "POST",
         headers: {
@@ -36,7 +36,7 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
   useEffect(() => {
     const getUser = async () => {
       const res = await fetch(
-        `${process.env.BASEURL}/api/v1/user/getuser/${receiverId}`
+        `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/user/getuser/${receiverId}`
       );
       const user = await res.json();
       setUser(user.user);

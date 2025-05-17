@@ -14,11 +14,14 @@ export const authOptions = {
         // This function is called when user submits login form
         try {
           // Send credentials to your backend API
-          const res = await fetch(`${process.env.BASEURL}/api/v1/user/signin`, {
-            method: "POST",
-            headers: { "Content-Type": "application/json" },
-            body: JSON.stringify(credentials), // Send email/password
-          });
+          const res = await fetch(
+            `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/user/signin`,
+            {
+              method: "POST",
+              headers: { "Content-Type": "application/json" },
+              body: JSON.stringify(credentials), // Send email/password
+            }
+          );
 
           const user = await res.json(); // Parse API response
 

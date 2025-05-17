@@ -22,7 +22,7 @@ const page = () => {
           return;
         }
         const res = await fetch(
-          `${process.env.BASEURL}/api/v1/message/getConversation/${receiverId}`,
+          `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/message/getConversation/${receiverId}`,
           {
             headers: {
               token,
@@ -42,7 +42,7 @@ const page = () => {
     const getAllUsers = async () => {
       try {
         const res = await fetch(
-          `${process.env.BASEURL}/api/v1/user/getAllUsers`,
+          `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/user/getAllUsers`,
           {
             headers: {
               token,

@@ -50,19 +50,22 @@ const page = () => {
 
     try {
       setLoading(true);
-      const res = await fetch(`${process.env.BASEURL}/api/v1/user/signup`, {
-        method: "POST",
-        headers: { "Content-Type": "application/json" },
-        body: JSON.stringify({
-          username,
-          name,
-          gender,
-          email,
-          password,
-          rePassword,
-          age,
-        }),
-      });
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/user/signup`,
+        {
+          method: "POST",
+          headers: { "Content-Type": "application/json" },
+          body: JSON.stringify({
+            username,
+            name,
+            gender,
+            email,
+            password,
+            rePassword,
+            age,
+          }),
+        }
+      );
 
       const data = await res.json();
 

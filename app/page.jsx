@@ -1,6 +1,5 @@
 "use client";
 import { useState, useEffect } from "react";
-import { baseUrl } from "./_utils/const";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import SideBar from "./component/SideBar";
@@ -23,7 +22,7 @@ const page = () => {
           return;
         }
         const res = await fetch(
-          `${baseUrl}/api/v1/message/getConversation/${receiverId}`,
+          `${process.env.BASEURL}/api/v1/message/getConversation/${receiverId}`,
           {
             headers: {
               token,
@@ -42,11 +41,14 @@ const page = () => {
   useEffect(() => {
     const getAllUsers = async () => {
       try {
-        const res = await fetch(`${baseUrl}/api/v1/user/getAllUsers`, {
-          headers: {
-            token,
-          },
-        });
+        const res = await fetch(
+          `${process.env.BASEURL}/api/v1/user/getAllUsers`,
+          {
+            headers: {
+              token,
+            },
+          }
+        );
         const data = await res.json();
         setUsers(data.users);
       } catch (error) {

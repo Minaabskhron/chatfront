@@ -3,7 +3,6 @@
 import { useRouter } from "next/navigation";
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
-import { baseUrl } from "../_utils/const.js";
 import Searchglasses from "../_svg/Searchglasses.jsx";
 import Conversation from "./Conversation.jsx";
 
@@ -21,7 +20,7 @@ const SideBar = ({ setReceiverId, messages }) => {
           router.push("/signin");
           return;
         }
-        const res = await fetch(`${baseUrl}/api/v1/conversation`, {
+        const res = await fetch(`${process.env.BASEURL}/api/v1/conversation`, {
           headers: {
             token,
           },

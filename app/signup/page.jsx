@@ -4,7 +4,6 @@ import Link from "next/link";
 import { useEffect, useState } from "react";
 import { useRouter } from "next/navigation";
 import { validateField } from "../_utils/validateForm";
-import { baseUrl } from "../_utils/const";
 import { useSession } from "next-auth/react";
 
 const page = () => {
@@ -51,7 +50,7 @@ const page = () => {
 
     try {
       setLoading(true);
-      const res = await fetch(`${baseUrl}/api/v1/user/signup`, {
+      const res = await fetch(`${process.env.BASEURL}/api/v1/user/signup`, {
         method: "POST",
         headers: { "Content-Type": "application/json" },
         body: JSON.stringify({

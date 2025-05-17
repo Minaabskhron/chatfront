@@ -1,7 +1,6 @@
 "use client";
 
 import { useEffect, useState } from "react";
-import { baseUrl } from "../_utils/const.js";
 import { useSession } from "next-auth/react";
 import { formatDate, formatTime } from "../_utils/formatDate.js";
 
@@ -13,17 +12,20 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
   const { username } = session?.user || "";
 
   const sendMsg = async () => {
-    const res = await fetch(`${baseUrl}/api/v1/message/sendmessage`, {
-      method: "POST",
-      headers: {
-        "Content-Type": "application/json",
-        token,
-      },
-      body: JSON.stringify({
-        text: msg,
-        receiverId,
-      }),
-    });
+    const res = await fetch(
+      `${process.env.BASEURL}/api/v1/message/sendmessage`,
+      {
+        method: "POST",
+        headers: {
+          "Content-Type": "application/json",
+          token,
+        },
+        body: JSON.stringify({
+          text: msg,
+          receiverId,
+        }),
+      }
+    );
     const newMessage = await res.json();
 
     setMessages((prev) => [...prev, newMessage.theMessage]);
@@ -33,7 +35,9 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
 
   useEffect(() => {
     const getUser = async () => {
-      const res = await fetch(`${baseUrl}/api/v1/user/getuser/${receiverId}`);
+      const res = await fetch(
+        `${process.env.BASEURL}/api/v1/user/getuser/${receiverId}`
+      );
       const user = await res.json();
       setUser(user.user);
       console.log(user.user);

@@ -5,7 +5,6 @@ const Conversation = ({ conversation, setReceiverId }) => {
   const [displayTime, setDisplayTime] = useState(
     formatDate(conversation?.lastMessage?.createdAt)
   );
-
   useEffect(() => {
     setDisplayTime(formatDate(conversation?.lastMessage?.createdAt));
   }, [conversation?.lastMessage?.createdAt]);

@@ -7,7 +7,7 @@ import { baseUrl } from "../_utils/const.js";
 import Searchglasses from "../_svg/Searchglasses.jsx";
 import Conversation from "./Conversation.jsx";
 
-const SideBar = ({ setReceiverId }) => {
+const SideBar = ({ setReceiverId, messages }) => {
   const [conversations, setConversations] = useState([]);
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -34,7 +34,7 @@ const SideBar = ({ setReceiverId }) => {
       }
     };
     if (status === "authenticated") fetchConversation();
-  }, [token, status, router]);
+  }, [token, status, router, messages]);
 
   return (
     <div>

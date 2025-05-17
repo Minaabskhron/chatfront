@@ -19,6 +19,7 @@ export const formatDate = (isoDate) => {
     hour: "2-digit",
     minute: "2-digit",
   });
+
   if (isToday) return normalTime || "";
   else return normalDate || "";
 };

@@ -1,6 +1,6 @@
 "use client";
+import { useSocket } from "../../providers/socketProviders.js";
 import { useEffect } from "react";
-import { useSocket } from "@/lib/socket/context";
 
 export const useChat = (receiverId, setMessages) => {
   const { socket, isConnected } = useSocket();

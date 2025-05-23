@@ -53,7 +53,7 @@ const page = () => {
         socket.emit("leave-conversations", [receiverId]);
       }
     };
-  }, [receiverId, isConnected, socket, fetchMessages, status, router]);
+  }, [receiverId, isConnected, socket, fetchMsg, status, router]);
 
   useEffect(() => {
     const getAllUsers = async () => {

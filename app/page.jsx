@@ -42,7 +42,7 @@ const page = () => {
       }
     };
     if (receiverId) fetchMsg();
-  }, [token, status, receiverId, socket]);
+  }, [token, status, receiverId, socket, messages]);
 
   useEffect(() => {
     const getAllUsers = async () => {

@@ -1,7 +1,7 @@
 "use client";
 import { SocketProvider } from "@/providers/socketProviders";
 import { SessionProvider, useSession } from "next-auth/react";
-import { useEffect } from "react";
+import { useEffect, useState } from "react";
 
 const ClientLayout = ({ children }) => {
   return (

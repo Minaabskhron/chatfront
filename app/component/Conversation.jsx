@@ -2,6 +2,8 @@ import { useEffect, useState } from "react";
 import { formatDate } from "../_utils/formatDate.js";
 
 const Conversation = ({ conversation, setReceiverId }) => {
+  console.log(conversation);
+
   const [displayTime, setDisplayTime] = useState(
     formatDate(conversation?.lastMessage?.createdAt)
   );

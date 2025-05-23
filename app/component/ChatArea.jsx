@@ -14,24 +14,35 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
   useChat(receiverId, setMessages);
 
   const sendMsg = async () => {
-    const res = await fetch(
-      `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/message/sendmessage`,
-      {
-        method: "POST",
-        headers: {
-          "Content-Type": "application/json",
-          token,
-        },
-        body: JSON.stringify({
-          text: msg,
-          receiverId,
-        }),
-      }
-    );
-    const newMessage = await res.json();
+    try {
+      if (!msg.trim() || !receiverId) return;
 
-    setMsg("");
-    // console.log(newMessage);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/message/sendmessage`,
+        {
+          method: "POST",
+          headers: {
+            "Content-Type": "application/json",
+            token,
+          },
+          body: JSON.stringify({
+            text: msg,
+            receiverId,
+          }),
+        }
+      );
+      const response = await res.json();
+
+      setMessages((prev) => [...prev, response.theMessage]);
+      setMsg("");
+
+      if (!res.ok) {
+        console.error("Server response error:", response);
+        throw new Error(response.message || "Failed to send message");
+      }
+    } catch (error) {
+      console.error("Error sending message:", error);
+    }
   };
 
   useEffect(() => {
@@ -64,7 +75,9 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
             <div className="overflow-y-auto max-h-[440px] pe-4">
               {messages?.map((message) => {
                 const isSender = message?.sender?.username === username;
+
                 const time = formatTime(message.createdAt);
+                console.log(message);
 
                 return (
                   <div

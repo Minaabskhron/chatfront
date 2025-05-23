@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect, useCallback } from "react";
+import { useState, useEffect } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import SideBar from "./component/SideBar";
@@ -10,50 +10,39 @@ const page = () => {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [receiverId, setReceiverId] = useState("");
-  const { socket, isConnected } = useSocket();
+  const { socket } = useSocket();
 
   const router = useRouter();
   const { data: session, status } = useSession();
   const token = session?.accessToken;
 
-  const fetchMsg = useCallback(async () => {
-    try {
-      if (!receiverId && status === "unauthenticated") return;
-
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/message/getConversation/${receiverId}`,
-        {
-          headers: {
-            token,
-          },
-        }
-      );
-      const data = await res.json();
-      setMessages(data.messages || []);
-    } catch (error) {
-      console.log(error);
-    }
-  }, [receiverId, token, status]);
-
   useEffect(() => {
-    if (status === "unauthenticated") {
-      router.push("/signin");
-      return;
-    }
-    if (isConnected && receiverId) {
-      // Join conversation room
-      socket.emit("join-conversations", [receiverId], (response) => {
-        if (response.status === "success") {
-          fetchMsg();
+    const fetchMsg = async () => {
+      try {
+        if (status === "unauthenticated") {
+          router.push("/signin");
+          return;
         }
-      });
-    }
-    return () => {
-      if (isConnected && receiverId) {
-        socket.emit("leave-conversations", [receiverId]);
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/message/getConversation/${receiverId}`,
+          {
+            headers: {
+              token,
+            },
+          }
+        );
+        const data = await res.json();
+        setMessages(data.messages);
+
+        if (socket && receiverId) {
+          socket.emit("join-conversations", [receiverId]);
+        }
+      } catch (error) {
+        console.log(error);
       }
     };
-  }, [receiverId, isConnected, socket, fetchMsg, status, router]);
+    if (receiverId) fetchMsg();
+  }, [token, status, receiverId, socket, messages]);
 
   useEffect(() => {
     const getAllUsers = async () => {
@@ -67,12 +56,12 @@ const page = () => {
           }
         );
         const data = await res.json();
-        setUsers(data.users || []);
+        setUsers(data.users);
       } catch (error) {
         console.log(error);
       }
     };
-    if (status === "authenticated") getAllUsers();
+    getAllUsers();
   }, [token, status]);
 
   return (

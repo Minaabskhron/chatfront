@@ -1,5 +1,5 @@
 "use client";
-import { SocketProvider } from "@/providers/socketProviders";
+import { SocketProvider } from "@/providers/socketProviders.js";
 import { SessionProvider, useSession } from "next-auth/react";
 import { useEffect, useState } from "react";
 

@@ -1,5 +1,5 @@
 "use client";
-import { useState, useEffect } from "react";
+import { useState, useEffect, useCallback } from "react";
 import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import SideBar from "./component/SideBar";
@@ -10,39 +10,50 @@ const page = () => {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [receiverId, setReceiverId] = useState("");
-  const { socket } = useSocket();
+  const { socket, isConnected } = useSocket();
 
   const router = useRouter();
   const { data: session, status } = useSession();
   const token = session?.accessToken;
 
-  useEffect(() => {
-    const fetchMsg = async () => {
-      try {
-        if (status === "unauthenticated") {
-          router.push("/signin");
-          return;
-        }
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/message/getConversation/${receiverId}`,
-          {
-            headers: {
-              token,
-            },
-          }
-        );
-        const data = await res.json();
-        setMessages(data.messages);
+  const fetchMsg = useCallback(async () => {
+    try {
+      if (!receiverId && status === "unauthenticated") return;
 
-        if (socket && receiverId) {
-          socket.emit("join-conversations", [receiverId]);
+      const res = await fetch(
+        `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/message/getConversation/${receiverId}`,
+        {
+          headers: {
+            token,
+          },
         }
-      } catch (error) {
-        console.log(error);
+      );
+      const data = await res.json();
+      setMessages(data.messages || []);
+    } catch (error) {
+      console.log(error);
+    }
+  }, [receiverId, token, status]);
+
+  useEffect(() => {
+    if (status === "unauthenticated") {
+      router.push("/signin");
+      return;
+    }
+    if (isConnected && receiverId) {
+      // Join conversation room
+      socket.emit("join-conversations", [receiverId], (response) => {
+        if (response.status === "success") {
+          fetchMsg();
+        }
+      });
+    }
+    return () => {
+      if (isConnected && receiverId) {
+        socket.emit("leave-conversations", [receiverId]);
       }
     };
-    if (receiverId) fetchMsg();
-  }, [token, status, receiverId, socket, messages]);
+  }, [receiverId, isConnected, socket, fetchMessages, status, router]);
 
   useEffect(() => {
     const getAllUsers = async () => {
@@ -56,12 +67,12 @@ const page = () => {
           }
         );
         const data = await res.json();
-        setUsers(data.users);
+        setUsers(data.users || []);
       } catch (error) {
         console.log(error);
       }
     };
-    getAllUsers();
+    if (status === "authenticated") getAllUsers();
   }, [token, status]);
 
   return (

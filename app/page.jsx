@@ -4,11 +4,13 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import SideBar from "./component/SideBar";
 import ChatArea from "./component/ChatArea";
+import { useSocket } from "@/lib/socket/context.js";
 
 const page = () => {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [receiverId, setReceiverId] = useState("");
+  const { socket } = useSocket();
 
   const router = useRouter();
   const { data: session, status } = useSession();
@@ -31,12 +33,16 @@ const page = () => {
         );
         const data = await res.json();
         setMessages(data.messages);
+
+        if (socket && receiverId) {
+          socket.emit("join-conversations", [receiverId]);
+        }
       } catch (error) {
         console.log(error);
       }
     };
     if (receiverId) fetchMsg();
-  }, [token, status, receiverId]);
+  }, [token, status, receiverId, socket]);
 
   useEffect(() => {
     const getAllUsers = async () => {

@@ -1,6 +1,7 @@
 "use client";
-import { SocketProvider } from "@/providers/socketProviders.js";
+import { SocketProvider } from "@/providers/socketProviders";
 import { SessionProvider, useSession } from "next-auth/react";
+import { useEffect } from "react";
 
 const ClientLayout = ({ children }) => {
   return (
@@ -10,14 +11,20 @@ const ClientLayout = ({ children }) => {
   );
 };
 
-// Separate component that uses the session
 const SocketProviderWrapper = ({ children }) => {
-  const { data: session } = useSession();
-  const token = session?.accessToken || "";
+  const { data: session, status } = useSession();
+  const [mounted, setMounted] = useState(false);
+
+  useEffect(() => {
+    setMounted(true);
+    return () => setMounted(false);
+  }, []);
+
+  if (!mounted || status === "loading") return null;
 
   return (
-    <SocketProvider token={token}>
-      <div>{children}</div>
+    <SocketProvider token={session?.accessToken || ""}>
+      <div className="flex-1 w-full">{children}</div>
     </SocketProvider>
   );
 };

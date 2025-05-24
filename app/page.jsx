@@ -10,7 +10,7 @@ const page = () => {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [receiverId, setReceiverId] = useState("");
-  const [typing, settyping] = useState(false);
+  const [typing, setTyping] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
   const token = session?.accessToken;

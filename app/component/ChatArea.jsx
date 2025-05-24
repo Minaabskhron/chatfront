@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import { formatDate, formatTime } from "../_utils/formatDate.js";
 import TypingSvg from "../_svg/TypingSvg.jsx";
 
-const ChatArea = ({ receiverId, messages, setMessages, socket, typing }) => {
+const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState("");
   const { data: session } = useSession();
@@ -105,7 +105,7 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, typing }) => {
         </div>
         <div>
           <div>
-            {typing ? (
+            {isTyping ? (
               <div className="mb-3">
                 <TypingSvg />
               </div>

@@ -3,7 +3,6 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { formatDate, formatTime } from "../_utils/formatDate.js";
-import { useChat } from "../_hooks/use-chat.js";
 
 const ChatArea = ({ receiverId, messages, setMessages }) => {
   const [msg, setMsg] = useState("");
@@ -11,7 +10,6 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
   const { data: session } = useSession();
   const token = session?.accessToken || "";
   const { username } = session?.user || "";
-  useChat(receiverId, setMessages);
 
   const sendMsg = async () => {
     try {

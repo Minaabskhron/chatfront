@@ -3,12 +3,14 @@
 import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { formatDate, formatTime } from "../_utils/formatDate.js";
+import TypingSvg from "../_svg/TypingSvg.jsx";
 
-const ChatArea = ({ receiverId, messages, setMessages, socket }) => {
+const ChatArea = ({ receiverId, messages, setMessages, socket, typing }) => {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState("");
   const { data: session } = useSession();
   const { username } = session?.user || "";
+  let typingTimer;
 
   useEffect(() => {
     if (!socket) return;
@@ -32,6 +34,11 @@ const ChatArea = ({ receiverId, messages, setMessages, socket }) => {
         senderId: session.user._id,
         receiverId,
         text: msg,
+      });
+
+      socket.emit("stop-typing", {
+        senderId: session.user._id,
+        receiverId,
       });
       setMsg("");
     } catch (error) {
@@ -65,7 +72,7 @@ const ChatArea = ({ receiverId, messages, setMessages, socket }) => {
           {!receiverId ? (
             <p>there is no messages yet</p>
           ) : (
-            <div className="overflow-y-auto max-h-[440px] pe-4">
+            <div className="overflow-y-auto max-h-[430px] pe-4">
               {messages?.map((message) => {
                 const isSender = message?.sender?.username === username;
 
@@ -96,32 +103,67 @@ const ChatArea = ({ receiverId, messages, setMessages, socket }) => {
             </div>
           )}
         </div>
-        <div className="flex items-center gap-1 w-full mb-3">
-          <input
-            type="text"
-            name=""
-            id=""
-            value={msg}
-            onChange={(e) => setMsg(e.target.value)}
-            className="border bg-white rounded-2xl ps-2 py-1 w-full"
-            placeholder="type your message"
-          />
-          <button
-            className="cursor-pointer bg-gray-400 rounded-full px-1 py-1"
-            onClick={sendMsg}
-          >
-            <div>
-              <svg
-                xmlns="http://www.w3.org/2000/svg"
-                fill="white"
-                viewBox="0 0 24 24"
-                width="24"
-                height="24"
-              >
-                <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-              </svg>
-            </div>
-          </button>
+        <div>
+          <div>
+            {typing ? (
+              <div className="mb-3">
+                <TypingSvg />{" "}
+              </div>
+            ) : (
+              ""
+            )}
+          </div>
+          <div className="flex items-center gap-1 w-full mb-3">
+            <input
+              type="text"
+              name=""
+              id=""
+              value={msg}
+              onChange={(e) => {
+                setMsg(e.target.value);
+
+                if (socket && session?.user?._id && receiverId) {
+                  socket.emit("typing", {
+                    senderId: session.user._id,
+                    receiverId,
+                  });
+                  clearTimeout(typingTimer);
+                  typingTimer = setTimeout(() => {
+                    socket.emit("stop-typing", {
+                      senderId: session.user._id,
+                      receiverId,
+                    });
+                  }, 1000);
+                }
+              }}
+              onBlur={() => {
+                if (socket && session?.user?._id && receiverId) {
+                  socket.emit("stop-typing", {
+                    senderId: session.user._id,
+                    receiverId,
+                  });
+                }
+              }}
+              className="border bg-white rounded-2xl ps-2 py-1 w-full"
+              placeholder="type your message"
+            />
+            <button
+              className="cursor-pointer bg-gray-400 rounded-full px-1 py-1"
+              onClick={sendMsg}
+            >
+              <div>
+                <svg
+                  xmlns="http://www.w3.org/2000/svg"
+                  fill="white"
+                  viewBox="0 0 24 24"
+                  width="24"
+                  height="24"
+                >
+                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                </svg>
+              </div>
+            </button>
+          </div>
         </div>
       </div>
     </div>

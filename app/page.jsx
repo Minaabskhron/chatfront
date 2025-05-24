@@ -10,6 +10,7 @@ const page = () => {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [receiverId, setReceiverId] = useState("");
+  const [typing, settyping] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
   const token = session?.accessToken;
@@ -20,7 +21,7 @@ const page = () => {
 
   useEffect(() => {
     // 2. whenever we have a userId, join that room
-    if (currentUserId) {
+    if (socket && currentUserId) {
       socket.emit("join", currentUserId);
     }
     // if you're chatting with someone, join their room too
@@ -70,6 +71,43 @@ const page = () => {
     getAllUsers();
   }, [token, status]);
 
+  useEffect(() => {
+    // Online/offline
+    socket.on("user-online", (userId) => {
+      setUsers((users) => {
+        const list = Array.isArray(users) ? users : [];
+        return list.map((u) =>
+          u._id === userId ? { ...u, isOnline: true } : u
+        );
+      });
+    });
+
+    socket.on("user-offline", ({ userId, lastSeen }) => {
+      setUsers((users) => {
+        const list = Array.isArray(users) ? users : [];
+        return list.map((u) =>
+          u._id === userId ? { ...u, isOnline: false, lastSeen } : u
+        );
+      });
+    });
+
+    // Typing
+    socket.on("typing", ({ senderId }) => {
+      setTyping((t) => ({ ...t, [senderId]: true }));
+    });
+    socket.on("stop-typing", ({ senderId }) => {
+      setTyping((t) => ({ ...t, [senderId]: false }));
+    });
+
+    // Clean up
+    return () => {
+      socket.off("user-online");
+      socket.off("user-offline");
+      socket.off("typing");
+      socket.off("stop-typing");
+    };
+  }, [socket]);
+
   return (
     <>
       <div className=" h-screen p-10 bg-blue-400">
@@ -81,6 +119,7 @@ const page = () => {
             token={token}
             setMessages={setMessages}
             socket={socket}
+            typing={typing}
           />
           <div>
             <h2>users</h2>

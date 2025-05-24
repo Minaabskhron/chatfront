@@ -10,7 +10,7 @@ const page = () => {
   const [messages, setMessages] = useState([]);
   const [users, setUsers] = useState([]);
   const [receiverId, setReceiverId] = useState("");
-  const [typing, setTyping] = useState(false);
+  const [typingUsers, setTypingUsers] = useState(false);
   const router = useRouter();
   const { data: session, status } = useSession();
   const token = session?.accessToken;
@@ -119,7 +119,7 @@ const page = () => {
             token={token}
             setMessages={setMessages}
             socket={socket}
-            typing={typing}
+            isTyping={Boolean(typingUsers[receiverId])}
           />
           <div>
             <h2>users</h2>

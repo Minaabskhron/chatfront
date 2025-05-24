@@ -72,7 +72,7 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, typing }) => {
           {!receiverId ? (
             <p>there is no messages yet</p>
           ) : (
-            <div className="overflow-y-auto max-h-[430px] pe-4">
+            <div className="overflow-y-auto max-h-[420px] pe-4">
               {messages?.map((message) => {
                 const isSender = message?.sender?.username === username;
 
@@ -107,7 +107,7 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, typing }) => {
           <div>
             {typing ? (
               <div className="mb-3">
-                <TypingSvg />{" "}
+                <TypingSvg />
               </div>
             ) : (
               ""

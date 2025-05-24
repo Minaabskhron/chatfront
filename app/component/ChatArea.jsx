@@ -11,7 +11,6 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
   const { data: session } = useSession();
   const { username } = session?.user || "";
   let typingTimer;
-  console.log(isTyping);
 
   useEffect(() => {
     if (!socket) return;

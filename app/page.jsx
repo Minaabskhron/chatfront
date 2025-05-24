@@ -93,10 +93,10 @@ const page = () => {
 
     // Typing
     socket.on("typing", ({ senderId }) => {
-      setTyping((t) => ({ ...t, [senderId]: true }));
+      setTypingUsers((t) => ({ ...t, [senderId]: true }));
     });
     socket.on("stop-typing", ({ senderId }) => {
-      setTyping((t) => ({ ...t, [senderId]: false }));
+      setTypingUsers((t) => ({ ...t, [senderId]: false }));
     });
 
     // Clean up

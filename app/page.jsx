@@ -4,6 +4,7 @@ import { useRouter } from "next/navigation";
 import { useSession } from "next-auth/react";
 import SideBar from "./component/SideBar";
 import ChatArea from "./component/ChatArea";
+import { getSocket } from "./_utils/socket";
 
 const page = () => {
   const [messages, setMessages] = useState([]);
@@ -12,6 +13,18 @@ const page = () => {
   const router = useRouter();
   const { data: session, status } = useSession();
   const token = session?.accessToken;
+
+  // 1. init socket once
+  const socket = getSocket();
+  const currentUserId = session?.user?._id;
+
+  useEffect(() => {
+    // 2. whenever we have a userId, join that room
+    if (currentUserId) {
+      socket.emit("join", currentUserId);
+    }
+    // if you're chatting with someone, join their room too
+  }, [socket, currentUserId, receiverId]);
 
   useEffect(() => {
     const fetchMsg = async () => {
@@ -67,6 +80,7 @@ const page = () => {
             messages={messages}
             token={token}
             setMessages={setMessages}
+            socket={socket}
           />
           <div>
             <h2>users</h2>

@@ -58,6 +58,7 @@ export const authOptions = {
         token.name = user.user.name; // <-- Add this line
         token.email = user.user.email; // optional
         token.username = user.user.username; // optional
+        token._id = user.user._id;
       }
       return token; // Becomes available in session callback
     },
@@ -68,6 +69,7 @@ export const authOptions = {
       session.user.name = token.name; // <-- Add this line
       session.user.email = token.email; // optional
       session.user.username = token.username; // optional
+      session.user._id = token._id; // optional
       return session;
     },
   },

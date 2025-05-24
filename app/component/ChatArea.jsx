@@ -4,40 +4,36 @@ import { useEffect, useState } from "react";
 import { useSession } from "next-auth/react";
 import { formatDate, formatTime } from "../_utils/formatDate.js";
 
-const ChatArea = ({ receiverId, messages, setMessages }) => {
+const ChatArea = ({ receiverId, messages, setMessages, socket }) => {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState("");
   const { data: session } = useSession();
-  const token = session?.accessToken || "";
   const { username } = session?.user || "";
+
+  useEffect(() => {
+    if (!socket) return;
+    socket.on("new-message", ({ populatedMessage }) => {
+      setMessages((prev) => [...prev, populatedMessage]);
+    });
+    socket.on("message-error", (errMsg) => {
+      console.error("Socket error:", errMsg);
+    });
+    return () => {
+      socket.off("new-message");
+      socket.off("message-error");
+    };
+  }, [socket, setMessages]);
 
   const sendMsg = async () => {
     try {
       if (!msg.trim() || !receiverId) return;
 
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/message/sendmessage`,
-        {
-          method: "POST",
-          headers: {
-            "Content-Type": "application/json",
-            token,
-          },
-          body: JSON.stringify({
-            text: msg,
-            receiverId,
-          }),
-        }
-      );
-      const response = await res.json();
-
-      setMessages((prev) => [...prev, response.theMessage]);
+      socket.emit("send-message", {
+        senderId: session.user._id,
+        receiverId,
+        text: msg,
+      });
       setMsg("");
-
-      if (!res.ok) {
-        console.error("Server response error:", response);
-        throw new Error(response.message || "Failed to send message");
-      }
     } catch (error) {
       console.error("Error sending message:", error);
     }
@@ -50,7 +46,6 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
       );
       const user = await res.json();
       setUser(user.user);
-      console.log(user.user);
     };
     getUser();
   }, [receiverId]);
@@ -75,7 +70,6 @@ const ChatArea = ({ receiverId, messages, setMessages }) => {
                 const isSender = message?.sender?.username === username;
 
                 const time = formatTime(message.createdAt);
-                console.log(message);
 
                 return (
                   <div

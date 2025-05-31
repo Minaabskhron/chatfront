@@ -39,7 +39,7 @@ const SideBar = ({ setReceiverId, messages }) => {
   }, [token, status, router, messages]);
 
   return (
-    <div className="">
+    <div>
       <div className="mb-10">
         <h2 className="font-bold text-lg mb-1">{name}</h2>
         <h3>@{username}</h3>

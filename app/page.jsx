@@ -90,12 +90,12 @@ const page = () => {
   return (
     <>
       <div className=" h-screen p-10 bg-blue-400">
-        <div className="grid sm:grid-cols-[300px_1fr] mt-10 h-full gap-5">
+        <div className="sm:grid sm:grid-cols-[300px_1fr] mt-10 h-full sm:gap-5">
           <div
             className={
               receiverId
-                ? `bg-white p-4 mb-3 rounded-2xl hidden sm:block`
-                : `bg-white p-4 mb-3 rounded-2xl block`
+                ? `bg-white p-4 mb-3 rounded-2xl hidden sm:block h-full`
+                : `bg-white p-4 mb-3 rounded-2xl block h-full`
             }
           >
             <SideBar setReceiverId={setReceiverId} messages={messages} />

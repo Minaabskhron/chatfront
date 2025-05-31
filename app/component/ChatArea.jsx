@@ -123,7 +123,7 @@ const ChatArea = ({
   }, [socket, receiverId]);
 
   return (
-    <div className="flex justify-center items-center">
+    <div className="">
       <div className="flex flex-col justify-between gap-5 h-full">
         <div>
           <button
@@ -172,10 +172,10 @@ const ChatArea = ({
                         {time}
                       </span>
                     </div>
-                    <div ref={messagesEndRef} />
                   </div>
                 );
               })}
+              <div ref={messagesEndRef} />
             </div>
           )}
         </div>

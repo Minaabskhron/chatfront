@@ -49,7 +49,7 @@ export default function UserSearch({ setReceiverId, token }) {
       } finally {
         setLoading(false);
       }
-    }, 1000); // 300ms debounce
+    }, 300); // 300ms debounce
   }, [token]);
 
   // ───────────────────────────────────────────────────────────────────────────

@@ -103,6 +103,7 @@ const page = () => {
 
           <div className={receiverId ? "block" : "hidden sm:block"}>
             <ChatArea
+              setReceiverId={setReceiverId}
               receiverId={receiverId}
               messages={messages}
               token={token}

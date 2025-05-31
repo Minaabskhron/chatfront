@@ -106,15 +106,6 @@ export default function UserSearch({ setReceiverId, token }) {
                 <p className="font-medium">{u.username}</p>
                 <p className="text-xs text-gray-500">{u.name}</p>
               </div>
-              <div>
-                {u.isOnline ? (
-                  <span className="text-green-500 text-xs">● Online</span>
-                ) : (
-                  <span className="text-gray-400 text-xs">
-                    Last seen {new Date(u.lastSeen).toLocaleDateString()}
-                  </span>
-                )}
-              </div>
             </li>
           ))}
         </ul>

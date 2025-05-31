@@ -5,14 +5,7 @@ import { useSession } from "next-auth/react";
 import { formatDate, formatTime } from "../_utils/formatDate.js";
 import TypingSvg from "../_svg/TypingSvg.jsx";
 
-const ChatArea = ({
-  receiverId,
-  messages,
-  setMessages,
-  socket,
-  isTyping,
-  setReceiverId,
-}) => {
+const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState("");
   const { data: session } = useSession();
@@ -124,7 +117,7 @@ const ChatArea = ({
 
   return (
     <div className="flex flex-col justify-between gap-5 h-full">
-      <div>
+      <div className="flex flex-col grow">
         <div className="bg-white py-2 rounded-2xl mb-2 px-2">
           <h2>{user?.name || "messages"}</h2>
           <p className="text-xs text-gray-400">
@@ -138,34 +131,36 @@ const ChatArea = ({
         {messages.length === 0 ? (
           <p>there is no messages yet</p>
         ) : (
-          <div className="overflow-y-auto pe-2 max-h-[420px]">
-            {messages?.map((message) => {
-              const isSender = message?.sender?.username === username;
+          <div className="overflow-y-auto pe-2 max-h-[770px] sm:max-h-[440px]">
+            {receiverId
+              ? messages?.map((message) => {
+                  const isSender = message?.sender?.username === username;
 
-              const time = formatTime(message.createdAt);
+                  const time = formatTime(message.createdAt);
 
-              return (
-                <div
-                  key={message?._id}
-                  className={`flex ${
-                    isSender ? "justify-end" : "justify-start"
-                  } mb-2`}
-                >
-                  <div
-                    className={`px-4 py-2 rounded-2xl max-w-xs break-words ${
-                      isSender
-                        ? "bg-emerald-400 rounded-br-none"
-                        : "bg-white  rounded-bl-none"
-                    }`}
-                  >
-                    <p>{message?.text}</p>
-                    <span className="text-xs text-gray-700 block mt-1 text-right">
-                      {time}
-                    </span>
-                  </div>
-                </div>
-              );
-            })}
+                  return (
+                    <div
+                      key={message?._id}
+                      className={`flex ${
+                        isSender ? "justify-end" : "justify-start"
+                      } mb-2`}
+                    >
+                      <div
+                        className={`px-4 py-2 rounded-2xl max-w-xs break-words ${
+                          isSender
+                            ? "bg-emerald-400 rounded-br-none"
+                            : "bg-white  rounded-bl-none"
+                        }`}
+                      >
+                        <p>{message?.text}</p>
+                        <span className="text-xs text-gray-700 block mt-1 text-right">
+                          {time}
+                        </span>
+                      </div>
+                    </div>
+                  );
+                })
+              : ""}
             <div ref={messagesEndRef} />
           </div>
         )}

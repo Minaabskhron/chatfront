@@ -73,23 +73,6 @@ const page = () => {
 
   useEffect(() => {
     // Online/offline
-    socket.on("user-online", (userId) => {
-      setUsers((users) => {
-        const list = Array.isArray(users) ? users : [];
-        return list.map((u) =>
-          u._id === userId ? { ...u, isOnline: true } : u
-        );
-      });
-    });
-
-    socket.on("user-offline", ({ userId, lastSeen }) => {
-      setUsers((users) => {
-        const list = Array.isArray(users) ? users : [];
-        return list.map((u) =>
-          u._id === userId ? { ...u, isOnline: false, lastSeen } : u
-        );
-      });
-    });
 
     // Typing
     socket.on("typing", ({ senderId }) => {
@@ -101,8 +84,6 @@ const page = () => {
 
     // Clean up
     return () => {
-      socket.off("user-online");
-      socket.off("user-offline");
       socket.off("typing");
       socket.off("stop-typing");
     };

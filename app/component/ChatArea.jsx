@@ -47,15 +47,65 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
   };
 
   useEffect(() => {
+    if (!receiverId) {
+      setUser(null);
+      return;
+    }
+
     const getUser = async () => {
-      const res = await fetch(
-        `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/user/getuser/${receiverId}`
-      );
-      const user = await res.json();
-      setUser(user.user);
+      try {
+        const res = await fetch(
+          `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/user/getuser/${receiverId}`
+        );
+        const user = await res.json();
+        setUser(user.user);
+      } catch (error) {
+        console.error("Error fetching user:", err);
+        setUser(null);
+      }
     };
     getUser();
   }, [receiverId]);
+
+  useEffect(() => {
+    if (!socket || !receiverId) return;
+
+    const handleUserOnline = ({ userId }) => {
+      if (userId === receiverId) {
+        // Mark them online in the UI
+        setUser((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            isOnline: true,
+            lastSeen: null, // clear lastSeen when they’re live
+          };
+        });
+      }
+    };
+
+    const handleUserOffline = ({ userId, lastSeen }) => {
+      if (userId === receiverId) {
+        // Mark them offline and set the lastSeen timestamp
+        setUser((prev) => {
+          if (!prev) return prev;
+          return {
+            ...prev,
+            isOnline: false,
+            lastSeen, // the ISO string from server
+          };
+        });
+      }
+    };
+
+    socket.on("user-online", handleUserOnline);
+    socket.on("user-offline", handleUserOffline);
+
+    return () => {
+      socket.off("user-online", handleUserOnline);
+      socket.off("user-offline", handleUserOffline);
+    };
+  }, [socket, receiverId]);
 
   return (
     <div>

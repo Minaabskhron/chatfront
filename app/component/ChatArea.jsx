@@ -1,6 +1,6 @@
 "use client";
 
-import { useEffect, useState } from "react";
+import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { formatDate, formatTime } from "../_utils/formatDate.js";
 import TypingSvg from "../_svg/TypingSvg.jsx";
@@ -11,6 +11,14 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
   const { data: session } = useSession();
   const { username } = session?.user || "";
   let typingTimer;
+  const messagesEndRef = useRef(null);
+
+  useEffect(() => {
+    if (messagesEndRef.current) {
+      // Scroll so that the dummy <div ref={messagesEndRef} /> is visible
+      messagesEndRef.current.scrollIntoView({ behavior: "smooth" });
+    }
+  }, [messages]);
 
   useEffect(() => {
     if (!socket) return;
@@ -150,6 +158,7 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
                   </div>
                 );
               })}
+              <div ref={messagesEndRef} />
             </div>
           )}
         </div>

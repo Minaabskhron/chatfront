@@ -8,7 +8,7 @@ import { getSocket } from "./_utils/socket";
 
 const page = () => {
   const [messages, setMessages] = useState([]);
-  const [users, setUsers] = useState([]);
+  // const [users, setUsers] = useState([]);
   const [receiverId, setReceiverId] = useState("");
   const [typingUsers, setTypingUsers] = useState(false);
   const router = useRouter();
@@ -51,29 +51,27 @@ const page = () => {
     if (receiverId) fetchMsg();
   }, [token, status, receiverId]);
 
-  useEffect(() => {
-    const getAllUsers = async () => {
-      try {
-        const res = await fetch(
-          `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/user/getAllUsers`,
-          {
-            headers: {
-              token,
-            },
-          }
-        );
-        const data = await res.json();
-        setUsers(data.users);
-      } catch (error) {
-        console.log(error);
-      }
-    };
-    getAllUsers();
-  }, [token, status]);
+  // useEffect(() => {
+  //   const getAllUsers = async () => {
+  //     try {
+  //       const res = await fetch(
+  //         `${process.env.NEXT_PUBLIC_BASEURL}/api/v1/user/getAllUsers`,
+  //         {
+  //           headers: {
+  //             token,
+  //           },
+  //         }
+  //       );
+  //       const data = await res.json();
+  //       setUsers(data.users);
+  //     } catch (error) {
+  //       console.log(error);
+  //     }
+  //   };
+  //   getAllUsers();
+  // }, [token, status]);
 
   useEffect(() => {
-    // Online/offline
-
     // Typing
     socket.on("typing", ({ senderId }) => {
       setTypingUsers((t) => ({ ...t, [senderId]: true }));
@@ -102,7 +100,7 @@ const page = () => {
             socket={socket}
             isTyping={Boolean(typingUsers[receiverId])}
           />
-          <div>
+          {/* <div>
             <h2>users</h2>
             <div>
               {users?.length === 0 ? (
@@ -124,7 +122,7 @@ const page = () => {
                 </div>
               )}
             </div>
-          </div>
+          </div> */}
         </div>
       </div>
     </>

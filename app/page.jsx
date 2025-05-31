@@ -5,6 +5,7 @@ import { useSession } from "next-auth/react";
 import SideBar from "./component/SideBar";
 import ChatArea from "./component/ChatArea";
 import { getSocket } from "./_utils/socket";
+import NavBar from "./component/NavBar";
 
 const page = () => {
   const [messages, setMessages] = useState([]);
@@ -89,6 +90,7 @@ const page = () => {
 
   return (
     <>
+      <NavBar setReceiverId={setReceiverId} />
       <div className=" h-screen p-10 bg-blue-400">
         <div className="sm:grid sm:grid-cols-[300px_1fr] mt-10 h-full sm:gap-5">
           <div
@@ -101,7 +103,7 @@ const page = () => {
             <SideBar setReceiverId={setReceiverId} messages={messages} />
           </div>
 
-          <div className={receiverId ? "block" : "hidden sm:block"}>
+          <div className={receiverId ? "block h-full" : "hidden sm:block"}>
             <ChatArea
               setReceiverId={setReceiverId}
               receiverId={receiverId}

@@ -122,9 +122,11 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
           <div className="bg-white py-2 rounded-2xl mb-2 ps-2">
             <h2>{user?.name || "messages"}</h2>
             <p className="text-xs text-gray-400">
-              {user?.isOnline
-                ? "Online"
-                : `Last seen ${formatDate(user?.lastSeen)}`}
+              {receiverId
+                ? user?.isOnline
+                  ? "Online"
+                  : `Last seen ${formatDate(user?.lastSeen)}`
+                : ""}
             </p>
           </div>
           {!receiverId ? (
@@ -172,57 +174,61 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
               ""
             )}
           </div>
-          <div className="flex items-center gap-1 w-full mb-3">
-            <input
-              type="text"
-              name=""
-              id=""
-              value={msg}
-              onChange={(e) => {
-                setMsg(e.target.value);
+          {receiverId ? (
+            <div className="flex items-center gap-1 w-full mb-3">
+              <input
+                type="text"
+                name=""
+                id=""
+                value={msg}
+                onChange={(e) => {
+                  setMsg(e.target.value);
 
-                if (socket && session?.user?._id && receiverId) {
-                  socket.emit("typing", {
-                    senderId: session.user._id,
-                    receiverId,
-                  });
-                  clearTimeout(typingTimer);
-                  typingTimer = setTimeout(() => {
+                  if (socket && session?.user?._id && receiverId) {
+                    socket.emit("typing", {
+                      senderId: session.user._id,
+                      receiverId,
+                    });
+                    clearTimeout(typingTimer);
+                    typingTimer = setTimeout(() => {
+                      socket.emit("stop-typing", {
+                        senderId: session.user._id,
+                        receiverId,
+                      });
+                    }, 1000);
+                  }
+                }}
+                onBlur={() => {
+                  if (socket && session?.user?._id && receiverId) {
                     socket.emit("stop-typing", {
                       senderId: session.user._id,
                       receiverId,
                     });
-                  }, 1000);
-                }
-              }}
-              onBlur={() => {
-                if (socket && session?.user?._id && receiverId) {
-                  socket.emit("stop-typing", {
-                    senderId: session.user._id,
-                    receiverId,
-                  });
-                }
-              }}
-              className="border bg-white rounded-2xl ps-2 py-1 w-full"
-              placeholder="type your message"
-            />
-            <button
-              className="cursor-pointer bg-gray-400 rounded-full px-1 py-1"
-              onClick={sendMsg}
-            >
-              <div>
-                <svg
-                  xmlns="http://www.w3.org/2000/svg"
-                  fill="white"
-                  viewBox="0 0 24 24"
-                  width="24"
-                  height="24"
-                >
-                  <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
-                </svg>
-              </div>
-            </button>
-          </div>
+                  }
+                }}
+                className="border bg-white rounded-2xl ps-2 py-1 w-full"
+                placeholder="type your message"
+              />
+              <button
+                className="cursor-pointer bg-gray-400 rounded-full px-1 py-1"
+                onClick={sendMsg}
+              >
+                <div>
+                  <svg
+                    xmlns="http://www.w3.org/2000/svg"
+                    fill="white"
+                    viewBox="0 0 24 24"
+                    width="24"
+                    height="24"
+                  >
+                    <path d="M2.01 21L23 12 2.01 3 2 10l15 2-15 2z" />
+                  </svg>
+                </div>
+              </button>
+            </div>
+          ) : (
+            ""
+          )}
         </div>
       </div>
     </div>

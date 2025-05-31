@@ -90,16 +90,27 @@ const page = () => {
   return (
     <>
       <div className=" h-screen p-10 bg-blue-400">
-        <div className="grid grid-cols-[300px_1fr_200px] mt-10 h-full gap-5">
-          <SideBar setReceiverId={setReceiverId} messages={messages} />
-          <ChatArea
-            receiverId={receiverId}
-            messages={messages}
-            token={token}
-            setMessages={setMessages}
-            socket={socket}
-            isTyping={Boolean(typingUsers[receiverId])}
-          />
+        <div className="grid sm:grid-cols-[300px_1fr] mt-10 h-full gap-5">
+          <div
+            className={
+              receiverId
+                ? `bg-white p-4 mb-3 rounded-2xl hidden sm:block`
+                : `bg-white p-4 mb-3 rounded-2xl block`
+            }
+          >
+            <SideBar setReceiverId={setReceiverId} messages={messages} />
+          </div>
+
+          <div className={receiverId ? "block" : "hidden sm:block"}>
+            <ChatArea
+              receiverId={receiverId}
+              messages={messages}
+              token={token}
+              setMessages={setMessages}
+              socket={socket}
+              isTyping={Boolean(typingUsers[receiverId])}
+            />
+          </div>
           {/* <div>
             <h2>users</h2>
             <div>

@@ -21,7 +21,7 @@ const Conversation = ({ conversation, setReceiverId }) => {
           <h3> {conversation.receiver.name}</h3>
           <p className="text-gray-400">{displayTime}</p>
         </div>
-        <p>{conversation?.lastMessage?.text || ""}</p>
+        <p>{conversation?.lastMessage?.text.slice(0, 50) || ""}</p>
       </div>
     </div>
   );

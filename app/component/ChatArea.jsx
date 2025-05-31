@@ -146,7 +146,7 @@ const ChatArea = ({
         {messages.length === 0 ? (
           <p>there is no messages yet</p>
         ) : (
-          <div className="overflow-y-auto max-h-[420px] pe-4">
+          <div className="overflow-y-auto max-h-[340px] lg:max-h-[390px] pe-4">
             {messages?.map((message) => {
               const isSender = message?.sender?.username === username;
 

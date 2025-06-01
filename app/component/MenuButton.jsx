@@ -3,20 +3,19 @@ import { useState } from "react";
 import MenuButtonSvg from "../_svg/MenuButtonSvg";
 import Link from "next/link";
 
-const MenuButton = ({ setReceiverId }) => {
+const MenuButton = () => {
   const [open, setOpen] = useState("hidden");
   return (
     <div className="sm:hidden flex ">
       <div
         className="border p-1 rounded-md border-green-600 cursor-pointer"
         onClick={() => {
-          // if (open === "hidden") {
-          //   setOpen("");
-          //   return;
-          // }
+          if (open === "hidden") {
+            setOpen("");
+            return;
+          }
 
-          // setOpen("hidden");
-          setReceiverId(null);
+          setOpen("hidden");
         }}
       >
         <MenuButtonSvg />

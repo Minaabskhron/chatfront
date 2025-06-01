@@ -117,7 +117,7 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
 
   return (
     <div className="flex flex-col justify-between gap-5 h-full">
-      <div className="flex flex-col grow">
+      <div>
         <div className="bg-white py-2 rounded-2xl mb-2 px-2">
           <h2>{user?.name || "messages"}</h2>
           <p className="text-xs text-gray-400">
@@ -131,7 +131,7 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
         {messages.length === 0 ? (
           <p>there is no messages yet</p>
         ) : (
-          <div className="overflow-y-auto pe-2 max-h-[600px] sm:max-h-[440px]">
+          <div className="overflow-y-auto pe-2 max-h-[calc(100vh-225px)]">
             {receiverId
               ? messages?.map((message) => {
                   const isSender = message?.sender?.username === username;

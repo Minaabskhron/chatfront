@@ -90,9 +90,8 @@ const page = () => {
 
   return (
     <>
-      <NavBar setReceiverId={setReceiverId} />
-      <div className=" h-screen p-10 bg-blue-400">
-        <div className="sm:grid sm:grid-cols-[300px_1fr] mt-10 h-full sm:gap-5">
+      <div className="h-[calc(100vh-52px)] px-10 py-5 bg-blue-400">
+        <div className="sm:grid sm:grid-cols-[300px_1fr] h-full sm:gap-5">
           <div
             className={
               receiverId

@@ -176,7 +176,7 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
           )}
         </div>
         {receiverId ? (
-          <div className="flex items-center gap-1 w-full mb-3">
+          <div className="flex items-center gap-1 w-full mb-3 sticky bottom-0">
             <input
               type="text"
               name=""

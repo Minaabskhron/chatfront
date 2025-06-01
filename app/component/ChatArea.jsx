@@ -146,7 +146,7 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
                       } mb-2`}
                     >
                       <div
-                        className={`px-4 py-2 rounded-2xl max-w-xs break-words ${
+                        className={`px-4 py-2 rounded-2xl max-w-2xs break-words ${
                           isSender
                             ? "bg-emerald-400 rounded-br-none"
                             : "bg-white  rounded-bl-none"

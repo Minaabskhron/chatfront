@@ -5,7 +5,7 @@ import { useSession } from "next-auth/react";
 import SideBar from "./component/SideBar";
 import ChatArea from "./component/ChatArea";
 import { getSocket } from "./_utils/socket";
-import NavBar from "./component/NavBar";
+import BackButton from "./_svg/BackButton";
 
 const page = () => {
   const [messages, setMessages] = useState([]);
@@ -109,9 +109,11 @@ const page = () => {
               token={token}
               setMessages={setMessages}
               socket={socket}
+              setReceiverId={setReceiverId}
               isTyping={Boolean(typingUsers[receiverId])}
             />
           </div>
+
           {/* <div>
             <h2>users</h2>
             <div>

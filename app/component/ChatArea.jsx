@@ -4,8 +4,16 @@ import { useEffect, useRef, useState } from "react";
 import { useSession } from "next-auth/react";
 import { formatDate, formatTime } from "../_utils/formatDate.js";
 import TypingSvg from "../_svg/TypingSvg.jsx";
+import BackButton from "../_svg/BackButton.jsx";
 
-const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
+const ChatArea = ({
+  receiverId,
+  messages,
+  setMessages,
+  socket,
+  isTyping,
+  setReceiverId,
+}) => {
   const [msg, setMsg] = useState("");
   const [user, setUser] = useState("");
   const { data: session } = useSession();
@@ -119,16 +127,28 @@ const ChatArea = ({ receiverId, messages, setMessages, socket, isTyping }) => {
     <div className="flex flex-col justify-between gap-5 h-full">
       <div>
         <div className="bg-white py-2 rounded-2xl mb-2 px-2">
-          <h2>{user?.name || "messages"}</h2>
-          <p className="text-xs text-gray-400">
-            {receiverId
-              ? user?.isOnline
-                ? "Online"
-                : `Last seen ${formatDate(user?.lastSeen)}`
-              : ""}
-          </p>
+          <div className="flex gap-2  items-center">
+            <div
+              className="sm:hidden"
+              onClick={() => {
+                setReceiverId(null);
+              }}
+            >
+              <BackButton />
+            </div>
+            <div>
+              <h2>{user?.name || "messages"}</h2>
+              <p className="text-xs text-gray-400">
+                {receiverId
+                  ? user?.isOnline
+                    ? "Online"
+                    : `Last seen ${formatDate(user?.lastSeen)}`
+                  : ""}
+              </p>
+            </div>
+          </div>
         </div>
-        {messages.length === 0 ? (
+        {messages?.length === 0 ? (
           <p>there is no messages yet</p>
         ) : (
           <div className="overflow-y-auto pe-2 max-h-[calc(100vh-225px)]">

@@ -32,6 +32,7 @@ const SideBar = () => {
               setReceiverId={setReceiverId}
               conversation={conversation}
               key={conversation._id}
+              receiverId={receiverId}
             />
           ))}
         </div>

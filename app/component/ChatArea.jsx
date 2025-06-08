@@ -31,12 +31,6 @@ const ChatArea = React.memo(function ChatArea() {
 
     return messages.map((message) => {
       const isSender = message?.sender?.username === username;
-      console.log(message?.sender?.username);
-      console.log(message);
-
-      console.log(username);
-
-      console.log(isSender);
 
       const time = formatTime(message.createdAt);
       return (
@@ -72,14 +66,24 @@ const ChatArea = React.memo(function ChatArea() {
                 <BackButton />
               </div>
               <div>
-                <h2>{user?.name || "messages"}</h2>
-                <p className="text-xs text-gray-400">
-                  {receiverId
-                    ? user?.isOnline
-                      ? "Online"
-                      : `Last seen ${formatDate(user?.lastSeen)}`
-                    : ""}
-                </p>
+                {receiverId && (
+                  <div className="flex gap-2">
+                    <span className="bg-black text-white py-2 px-3 cursor-pointer sm ms-1 rounded-full">
+                      {user?.name[0].toUpperCase()}
+                    </span>
+
+                    <div>
+                      <h2>{user?.name || "messages"}</h2>
+                      <p className="text-xs text-gray-400">
+                        {receiverId
+                          ? user?.isOnline
+                            ? "Online"
+                            : `Last seen ${formatDate(user?.lastSeen)}`
+                          : ""}
+                      </p>
+                    </div>
+                  </div>
+                )}
               </div>
             </div>
           </div>

@@ -35,7 +35,7 @@ const SignUpSignIn = () => {
         <div className="relative"></div>
         <div>
           <span
-            className="bg-green-700 text-white py-2 px-3 cursor-pointer sm ms-1 rounded-full"
+            className="bg-black text-white py-2 px-3 cursor-pointer sm ms-1 rounded-full"
             onClick={() => {
               setOpen((s) => !s);
             }}

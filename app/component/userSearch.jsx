@@ -41,6 +41,7 @@ export default function UserSearch({ setReceiverId, token }) {
           throw new Error(`HTTP ${res.status}`);
         }
         const data = await res.json();
+        if (data.message === "No user found") setError("No user found");
         setResults(data.users || []);
       } catch (err) {
         console.error("Error searching users:", err);
@@ -85,7 +86,7 @@ export default function UserSearch({ setReceiverId, token }) {
       />
 
       {loading && <p className="text-sm text-gray-500">Searching…</p>}
-      {error && <p className="text-sm text-red-500">Error: {error}</p>}
+      {error && <p className="text-sm text-red-500"> {error}</p>}
 
       {/* ─────────────── Results List ─────────────── */}
       {results.length > 0 && (

@@ -1,4 +1,7 @@
-const MessageBubble = ({ isSender, text, time }) => {
+import DeliveredSvg from "../_svg/DeliveredSvg";
+import SentSvg from "../_svg/SentSvg";
+
+const MessageBubble = ({ isSender, text, time, status }) => {
   return (
     <div className={`flex ${isSender ? "justify-end" : "justify-start"} mb-2`}>
       <div
@@ -9,9 +12,13 @@ const MessageBubble = ({ isSender, text, time }) => {
         }`}
       >
         <p>{text}</p>
-        <span className="text-xs text-gray-700 block mt-1 text-right">
-          {time}
-        </span>
+        <div className="flex gap-1 justify-center items-center">
+          <span className="text-xs text-gray-700 block mt-1 text-right">
+            {time}
+          </span>
+          <div>{isSender && status === "sent" && <SentSvg />}</div>
+          <div>{isSender && status === "delivered" && <DeliveredSvg />}</div>
+        </div>
       </div>
     </div>
   );

@@ -23,13 +23,21 @@ const ChatArea = React.memo(function ChatArea() {
     msg,
     setMsg,
   } = useChat();
+
   const typingTimerRef = useRef(null);
 
   const renderedMessages = useMemo(() => {
     if (!receiverId) return null;
 
     return messages.map((message) => {
-      const isSender = message.sender?.username === username;
+      const isSender = message?.sender?.username === username;
+      console.log(message?.sender?.username);
+      console.log(message);
+
+      console.log(username);
+
+      console.log(isSender);
+
       const time = formatTime(message.createdAt);
       return (
         <MessageBubble
@@ -37,6 +45,7 @@ const ChatArea = React.memo(function ChatArea() {
           isSender={isSender}
           text={message.text}
           key={message._id}
+          status={message.status}
         />
       );
     });

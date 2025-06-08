@@ -91,12 +91,28 @@ const ChatProvider = ({ children }) => {
 
   useEffect(() => {
     if (!socket) return;
-    socket.on("new-message", ({ populatedMessage }) => {
-      setMessages((prev) => [...prev, populatedMessage]);
+
+    socket.on("new-message", ({ message }) => {
+      setMessages((prev) => {
+        const index = prev.findIndex((m) => m._id === message._id);
+
+        if (index !== -1) {
+          const newMessages = [...prev];
+          newMessages[index] = {
+            ...newMessages[index],
+            status: message.status || newMessages[index].status,
+          };
+          return newMessages;
+        }
+
+        return [...prev, message];
+      });
     });
+
     socket.on("message-error", (errMsg) => {
       console.error("Socket error:", errMsg);
     });
+
     return () => {
       socket.off("new-message");
       socket.off("message-error");
@@ -188,13 +204,21 @@ const ChatProvider = ({ children }) => {
     const handleUserOnline = ({ userId }) => {
       if (userId === receiverId) {
         // Mark them online in the UI
-        setUser((prev) => {
-          if (!prev) return prev;
-          return {
-            ...prev,
-            isOnline: true,
-            lastSeen: null, // clear lastSeen when they’re live
-          };
+        setUser((prev) =>
+          prev ? { ...prev, isOnline: true, lastSeen: null } : prev
+        );
+
+        const undelivered = messages.filter(
+          // <-- use receiverId here, not m.receiver
+          (m) => m.status === "sent" && m.receiver === receiverId
+        );
+
+        // 3) Emit check for each
+        undelivered.forEach((msg) => {
+          socket.emit("check-delivery", {
+            messageId: msg._id,
+            receiverId,
+          });
         });
       }
     };
@@ -220,7 +244,7 @@ const ChatProvider = ({ children }) => {
       socket.off("user-online", handleUserOnline);
       socket.off("user-offline", handleUserOffline);
     };
-  }, [socket, receiverId]);
+  }, [socket, receiverId, messages]);
 
   //hna allogic
   return (

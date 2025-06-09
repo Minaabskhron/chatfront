@@ -1,4 +1,5 @@
 import DeliveredSvg from "../_svg/DeliveredSvg";
+import ReadSvg from "../_svg/ReadSvg";
 import SentSvg from "../_svg/SentSvg";
 
 const MessageBubble = ({ isSender, text, time, status }) => {
@@ -21,6 +22,8 @@ const MessageBubble = ({ isSender, text, time, status }) => {
         >
           <div>{isSender && status === "sent" && <SentSvg />}</div>
           <div>{isSender && status === "delivered" && <DeliveredSvg />}</div>
+          <div>{isSender && status === "seen" && <ReadSvg />}</div>
+
           <span className="text-xs text-gray-700 block mt-1 text-right">
             {time}
           </span>

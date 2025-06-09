@@ -32,6 +32,7 @@ const ChatProvider = ({ children }) => {
   const [conversations, setConversations] = useState([]);
   const [user, setUser] = useState("");
   const [msg, setMsg] = useState("");
+  const [conversationId, setConversationId] = useState("");
 
   const messagesEndRef = useRef(null);
 
@@ -246,6 +247,53 @@ const ChatProvider = ({ children }) => {
     };
   }, [socket, receiverId, messages]);
 
+  useEffect(() => {
+    if (!socket || !receiverId || !conversationId) return;
+
+    // mark this convo as read for currentUserId
+    socket.emit("mark-as-read", {
+      conversationId, // assuming your convoId === receiverId; adjust if you have separate convo IDs
+      receiverId: currentUserId,
+      senderId: receiverId,
+    });
+
+    // --- NEW: join the conversation room on the server ---
+    socket.emit("join-conversation", { conversationId });
+
+    return () => {
+      // leave the conversation room when closing chat
+      socket.emit("leave-conversation", { conversationId });
+    };
+  }, [socket, receiverId, currentUserId, conversationId]);
+
+  useEffect(() => {
+    if (!socket) return;
+
+    if (!socket || !receiverId || !conversationId) return;
+    socket.on("messages-read", ({ conversationId, messages: updatedMsgs }) => {
+      // 1) update local messages array:
+
+      setMessages((prev) =>
+        prev.map((m) =>
+          updatedMsgs.find((u) => u._id === m._id)
+            ? { ...m, status: "seen" }
+            : m
+        )
+      );
+
+      // 2) update your conversations unread count
+      setConversations((prev) =>
+        prev.map((c) =>
+          c._id === conversationId ? { ...c, unreadCount: 0 } : c
+        )
+      );
+    });
+
+    return () => {
+      socket.off("messages-read");
+    };
+  }, [socket, setMessages, setConversations, conversationId]);
+
   //hna allogic
   return (
     //hna alvalues aly 3aizen ntl3ha
@@ -266,6 +314,8 @@ const ChatProvider = ({ children }) => {
         currentUserId,
         msg,
         setMsg,
+        setConversationId,
+        currentUserId,
       }}
     >
       {children}

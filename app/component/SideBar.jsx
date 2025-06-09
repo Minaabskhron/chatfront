@@ -28,12 +28,7 @@ const SideBar = () => {
       ) : (
         <div>
           {conversations?.map((conversation) => (
-            <Conversation
-              setReceiverId={setReceiverId}
-              conversation={conversation}
-              key={conversation._id}
-              receiverId={receiverId}
-            />
+            <Conversation conversation={conversation} key={conversation._id} />
           ))}
         </div>
       )}
